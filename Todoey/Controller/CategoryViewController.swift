@@ -91,12 +91,18 @@ class CategoryViewController: UITableViewController {
     }
     
     //MARK: - Swipe to Delete Functionality
-//    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-//        if editingStyle == .delete {
-//            realm.delete(categoryArray[indexPath.row])
-//        }
-//        saveCategories(category: categoryArray)
-//    }
-    
-    
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            if let category = categoryArray?[indexPath.row] {
+                do {
+                    try realm.write {
+                        realm.delete(category)
+                    }
+                } catch {
+                    print("Error deleting category: \(error)")
+                }
+            }
+        }
+        self.tableView.reloadData()
+    }
 }
