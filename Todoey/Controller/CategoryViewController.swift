@@ -8,8 +8,9 @@
 
 import UIKit
 import RealmSwift
+import SwipeCellKit
 
-class CategoryViewController: UITableViewController {
+class CategoryViewController: SwipeTableViewController {
 
     let realm = try! Realm()
 
@@ -50,7 +51,10 @@ class CategoryViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath)
+//        let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath) as! SwipeTableViewCell
+//        cell.delegate = self
+        
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
         cell.textLabel?.text = categoryArray?[indexPath.row].name ?? "No Categories Yet."
         return cell
     }
@@ -90,19 +94,32 @@ class CategoryViewController: UITableViewController {
         self.tableView.reloadData()
     }
     
-    //MARK: - Swipe to Delete Functionality
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            if let category = categoryArray?[indexPath.row] {
-                do {
-                    try realm.write {
-                        realm.delete(category)
-                    }
-                } catch {
-                    print("Error deleting category: \(error)")
+    override func updateModel(at indexPath: IndexPath) {
+        if let categoryToDelete = self.categoryArray?[indexPath.row] {
+            do {
+                try self.realm.write {
+                    self.realm.delete(categoryToDelete)
                 }
+            } catch {
+                print("Error deleting category: \(error)")
             }
         }
-        self.tableView.reloadData()
     }
+    
+    //MARK: - Swipe to Delete Functionality
+    // Removed: I liked the version in Lecture 286 better ;)
+    //    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+    //        if editingStyle == .delete {
+    //            if let category = categoryArray?[indexPath.row] {
+    //                do {
+    //                    try realm.write {
+    //                        realm.delete(category)
+    //                    }
+    //                } catch {
+    //                    print("Error deleting category: \(error)")
+    //                }
+    //            }
+    //        }
+    //        self.tableView.reloadData()
+    //    }
 }

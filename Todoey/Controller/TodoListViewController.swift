@@ -9,7 +9,7 @@
 import UIKit
 import RealmSwift
 
-class TodoListViewController: UITableViewController {
+class TodoListViewController: SwipeTableViewController {
     
     var todoItems: Results<Item>?
     let realm = try! Realm()
@@ -31,8 +31,8 @@ class TodoListViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
-        
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
+            
         if let item = todoItems?[indexPath.row] {
             cell.textLabel?.text = item.title
             cell.accessoryType = item.done ? .checkmark : .none
@@ -60,20 +60,21 @@ class TodoListViewController: UITableViewController {
     }
     
     //MARK: - Swipe to Delete Functionality
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            if let item = todoItems?[indexPath.row] {
-                do {
-                    try realm.write {
-                        realm.delete(item)
-                    }
-                } catch {
-                    print("Error deleting item: \(error)")
-                }
-            }
-        }
-        self.tableView.reloadData()
-    }
+    // Removed: I liked the version in Lecture 286 better ;)
+    //    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+    //        if editingStyle == .delete {
+    //            if let item = todoItems?[indexPath.row] {
+    //                do {
+    //                    try realm.write {
+    //                        realm.delete(item)
+    //                    }
+    //                } catch {
+    //                    print("Error deleting item: \(error)")
+    //                }
+    //            }
+    //        }
+    //        self.tableView.reloadData()
+    //    }
     
     //MARK: - Add New Items
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
@@ -128,6 +129,18 @@ class TodoListViewController: UITableViewController {
         todoItems = selectedCategory?.items.sorted(byKeyPath: "dateCreated", ascending: true)
         self.tableView.reloadData()
     }
+    
+    override func updateModel(at indexPath: IndexPath) {
+        if let item = todoItems?[indexPath.row] {
+            do {
+                try realm.write {
+                    realm.delete(item)
+                }
+            } catch {
+                print("Error deleting item: \(error)")
+            }
+        }
+    }
 }
 
 //MARK: - Search Bar Extension
@@ -146,4 +159,5 @@ extension TodoListViewController: UISearchBarDelegate {
         }
     }
 }
+
 
