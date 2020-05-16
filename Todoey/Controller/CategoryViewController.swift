@@ -9,18 +9,35 @@
 import UIKit
 import RealmSwift
 import SwipeCellKit
+import ChameleonFramework
 
 class CategoryViewController: SwipeTableViewController {
 
     let realm = try! Realm()
 
     var categoryArray: Results<Category>?
+    let colorArray = [FlatPink(), FlatWatermelonDark(), FlatRedDark(), FlatMaroon(), FlatPlum(), FlatMagenta(), FlatPurple()]
             
     override func viewDidLoad() {
         super.viewDidLoad()
         loadCategories()
+        tableView.separatorStyle = .none
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+            guard let navBar = navigationController?.navigationBar else {
+                fatalError("Navigation controller does not exist.")
+            }
+        
+        let navBarColor = FlatWhiteDark()
+        navBar.barTintColor = navBarColor
+        navBar.tintColor = UIColor(contrastingBlackOrWhiteColorOn: navBarColor, isFlat: true)
+        navBar.titleTextAttributes = [
+            NSAttributedString.Key.foregroundColor : UIColor(contrastingBlackOrWhiteColorOn: navBarColor, isFlat: true)
+        ]
+        
+    }
+    
     //MARK: - Add New Categories
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
         var textField = UITextField()
@@ -30,8 +47,10 @@ class CategoryViewController: SwipeTableViewController {
         let action = UIAlertAction(title: "Add", style: .default) { (action) in
             // what happens now
             if let textEntered = textField.text {
+                let index = (self.categoryArray?.count ?? 0) % 7
                 let newCategory = Category()
                 newCategory.name = textEntered
+                newCategory.color = self.colorArray[index].hexValue()
                 self.saveCategories(category: newCategory)
             }
         }
@@ -51,19 +70,25 @@ class CategoryViewController: SwipeTableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath) as! SwipeTableViewCell
-//        cell.delegate = self
         
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
         cell.textLabel?.text = categoryArray?[indexPath.row].name ?? "No Categories Yet."
+        
+        if let category = categoryArray?[indexPath.row] {
+            guard let categoryColor = UIColor(hexString: category.color) else {fatalError()}
+            cell.backgroundColor = categoryColor
+            cell.textLabel?.textColor = UIColor(contrastingBlackOrWhiteColorOn: categoryColor, isFlat: true)
+            
+            
+        }
+        
         return cell
     }
     
     //MARK: - TableView Delegate Methods
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        // "Flash" grey in view
-        //tableView.deselectRow(at: indexPath, animated: true)
         self.performSegue(withIdentifier: "goToItems", sender: self)
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     // Segue Preparation

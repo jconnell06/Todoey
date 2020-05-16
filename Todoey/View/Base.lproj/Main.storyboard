@@ -39,12 +39,14 @@
                     </tableView>
                     <navigationItem key="navigationItem" title="Items" id="lxh-tn-oKD">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="Fvk-rc-Ixb">
-                            <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <connections>
                                 <action selector="addButtonPressed:" destination="ZNV-ai-Fvb" id="9f5-GW-eT9"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <connections>
+                        <outlet property="searchBar" destination="g2v-kM-aTf" id="y8s-1K-HAg"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WZN-jC-2YE" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -55,13 +57,15 @@
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="x3w-nE-0We" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="2PQ-xq-lZx">
+                    <navigationBar key="navigationBar" contentMode="scaleAspectFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2PQ-xq-lZx">
                         <rect key="frame" x="0.0" y="44" width="414" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <color key="barTintColor" systemColor="systemTealColor" red="0.35294117650000001" green="0.7843137255" blue="0.98039215690000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <edgeInsets key="layoutMargins" top="0.0" left="8" bottom="8" right="8"/>
                         <textAttributes key="titleTextAttributes">
-                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <fontDescription key="fontDescription" name="Noteworthy-Bold" family="Noteworthy" pointSize="30"/>
+                            <offsetWrapper key="textShadowOffset" horizontal="0.0" vertical="0.0"/>
                         </textAttributes>
+                        <variation key="heightClass=regular-widthClass=compact" preservesSuperviewLayoutMargins="NO"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
@@ -97,7 +101,6 @@
                     </tableView>
                     <navigationItem key="navigationItem" title="Todoey" id="OSa-CM-9vX">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="6DG-p6-WKD">
-                            <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <connections>
                                 <action selector="addButtonPressed:" destination="Eem-9T-ceq" id="UkG-Un-bEp"/>
                             </connections>
